@@ -2,8 +2,6 @@ package com.machineric.machinericpractice.scheduler;
 
 import com.machineric.machinericpractice.client.WorldTimeClient;
 import com.machineric.machinericpractice.client.dto.WorldTimeResponse;
-import com.machineric.machinericpractice.entity.WorldTime;
-import com.machineric.machinericpractice.exception.handler.GlobalExceptionHandler;
 import com.machineric.machinericpractice.mapper.WorldTimeMapper;
 import com.machineric.machinericpractice.service.WorldTimeService;
 import org.slf4j.Logger;

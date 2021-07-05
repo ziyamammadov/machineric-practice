@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorldTimeRepository extends JpaRepository<WorldTime, Long> {
-//    Optional<WorldTime> find();
 }

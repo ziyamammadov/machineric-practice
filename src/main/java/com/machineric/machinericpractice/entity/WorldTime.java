@@ -1,5 +1,6 @@
 package com.machineric.machinericpractice.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Entity
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WorldTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
