@@ -76,7 +76,7 @@ public class DynamicSchedulerImpl implements SchedulingConfigurer, DynamicSchedu
 
     @Override
     public void getWorldTime() {
-        logger.info("====== Polling ======");
+        logger.info("Polling from an API");
         WorldTimeResponse currentWorldTime = client.getCurrentWorldTime();
         service.save(WorldTimeMapper.INSTANCE.worldTimeResponseToEntity(currentWorldTime));
     }
