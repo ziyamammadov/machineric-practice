@@ -7,8 +7,6 @@ import com.machineric.machinericpractice.repository.WorldTimeRepository;
 import com.machineric.machinericpractice.service.WorldTimeService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class WorldTimeServiceImpl implements WorldTimeService {
     private final WorldTimeRepository repository;
@@ -18,9 +16,7 @@ public class WorldTimeServiceImpl implements WorldTimeService {
     }
 
     public WorldTime get() {
-        List<WorldTime> list = repository.findAll();
-        if (list.size() > 0) return list.get(0);
-        throw new DataNotFoundException(ResponseMessage.ERROR_WORLD_TIME_NOT_FOUND);
+        return repository.findById(1L).orElseThrow(() -> new DataNotFoundException(ResponseMessage.ERROR_WORLD_TIME_NOT_FOUND));
     }
 
     public void save(WorldTime worldTime) {

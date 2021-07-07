@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,6 +42,6 @@ public class WorldTime {
     private ZonedDateTime utcDatetime;
     private String utcOffset;
     private Integer weekNumber;
-    @CreationTimestamp
+    @UpdateTimestamp
     private LocalDateTime lastUpdateTime;
 }

@@ -1,15 +1,14 @@
-package com.machineric.machinericpractice.scheduler;
+package com.machineric.machinericpractice.scheduler.impl;
 
 import com.machineric.machinericpractice.client.WorldTimeClient;
 import com.machineric.machinericpractice.client.dto.WorldTimeResponse;
 import com.machineric.machinericpractice.mapper.WorldTimeMapper;
+import com.machineric.machinericpractice.scheduler.DynamicScheduler;
 import com.machineric.machinericpractice.service.WorldTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Service;
 
@@ -17,28 +16,21 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 
 @Service
-public class CustomDynamicScheduler implements SchedulingConfigurer {
-    Logger logger = LoggerFactory.getLogger(CustomDynamicScheduler.class);
-
-    private ScheduledTaskRegistrar scheduledTaskRegistrar;
+public class DynamicSchedulerImpl implements SchedulingConfigurer, DynamicScheduler {
     private final Map<String, ScheduledFuture> futureMap = new HashMap<>();
-    private int delay = 3;
     private final WorldTimeClient client;
     private final WorldTimeService service;
+    private final TaskScheduler scheduler;
+    Logger logger = LoggerFactory.getLogger(DynamicScheduler.class);
+    private ScheduledTaskRegistrar scheduledTaskRegistrar;
+    private int delay = 10;
 
-    public CustomDynamicScheduler(WorldTimeClient client, WorldTimeService service) {
+    public DynamicSchedulerImpl(WorldTimeClient client, WorldTimeService service, TaskScheduler scheduler) {
         this.client = client;
         this.service = service;
+        this.scheduler = scheduler;
     }
 
-    @Bean
-    public TaskScheduler poolScheduler() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
-        scheduler.setPoolSize(1);
-        scheduler.initialize();
-        return scheduler;
-    }
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
@@ -46,10 +38,11 @@ public class CustomDynamicScheduler implements SchedulingConfigurer {
             scheduledTaskRegistrar = taskRegistrar;
         }
         if (taskRegistrar.getScheduler() == null) {
-            taskRegistrar.setScheduler(poolScheduler());
+            taskRegistrar.setScheduler(scheduler);
         }
     }
 
+    @Override
     public boolean addTask(String taskName) {
         logger.info("Adding new scheduled task");
         if (futureMap.containsKey(taskName)) {
@@ -69,6 +62,7 @@ public class CustomDynamicScheduler implements SchedulingConfigurer {
         return true;
     }
 
+    @Override
     public boolean removeTask(String taskName) {
         logger.info("Removing scheduled task");
         if (!futureMap.containsKey(taskName)) {
@@ -80,17 +74,20 @@ public class CustomDynamicScheduler implements SchedulingConfigurer {
         return true;
     }
 
+    @Override
     public void getWorldTime() {
         logger.info("====== Polling ======");
         WorldTimeResponse currentWorldTime = client.getCurrentWorldTime();
         service.save(WorldTimeMapper.INSTANCE.worldTimeResponseToEntity(currentWorldTime));
     }
 
-    public void setDelay(int delay) {
-        this.delay = delay;
-    }
-
+    @Override
     public int getDelay() {
         return delay;
+    }
+
+    @Override
+    public void setDelay(int delay) {
+        this.delay = delay;
     }
 }

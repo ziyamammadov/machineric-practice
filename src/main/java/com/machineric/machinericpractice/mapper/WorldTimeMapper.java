@@ -11,7 +11,7 @@ public interface WorldTimeMapper {
     WorldTimeMapper INSTANCE = Mappers.getMapper(WorldTimeMapper.class);
 
     @Mapping(target = "lastUpdateTime", source = "")
-    @Mapping(target = "id", source = "")
+    @Mapping(target = "id", constant = "1L")
     WorldTime worldTimeResponseToEntity(WorldTimeResponse response);
 
 }
